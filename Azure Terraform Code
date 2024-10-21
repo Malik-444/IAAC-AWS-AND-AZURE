@@ -1,0 +1,64 @@
+#Resource Group Creation
+
+ resource "azurerm_resource_group" "ProjectName1" {
+  name     = "ProjectName"
+  location = "Centralus"
+  tags = {
+    environment = "Test"
+  }
+}
+
+#Network Creation 
+
+resource "azurerm_virtual_network" "vnet" {
+  name                = "vnet"
+  address_space       = ["10.0.0.0/16"]
+  location            = azurerm_resource_group.ProjectName1.location
+  resource_group_name = azurerm_resource_group.ProjectName.name
+}
+
+resource "azurerm_subnet" "subnet" {
+  name                 = "subnet"
+  resource_group_name  = azurerm_resource_group.ProjectName1.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = ["10.0.1.0/24"]
+}
+
+resource "azurerm_network_interface" "NIC" {
+  name                = "NIC"       
+  location            = azurerm_resource_group.ProjectName.location
+  resource_group_name = azurerm_resource_group.ProjectName.name
+ ip_configuration {
+    name                          = "internal"
+    subnet_id                     = azurerm_subnet.subnet.id
+    private_ip_address_allocation = "Dynamic"
+  }
+}
+
+
+
+#VM Creation
+
+resource "azurerm_windows_virtual_machine" "vm" {
+  name                = "VMName"
+  resource_group_name = azurerm_resource_group.ProjectName1.name
+  location            = azurerm_resource_group.ProjectName1.location
+  size                = "Standard_b1s"
+  admin_username      = "adminuser"
+  admin_password      = "AnotherSecurePassword123!"
+network_interface_ids = [azurerm_network_interface.NIC.id]
+
+  
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+ source_image_reference {
+    publisher = "MicrosoftWindowsServer"
+    offer     = "WindowsServer"
+    sku       = "2016-Datacenter"
+    version   = "latest"
+  }
+}
+
