@@ -18,21 +18,27 @@ Before diving into Terraform scripts, I set up my Azure environment. I ensured I
 
 Step 2: Writing the Terraform Configuration
 Using Terraform, I created a configuration file to define the desired state of my Azure Entra ID users. Here’s a simplified example of what my configuration looked like:
-hcl
-Copy code
-provider "azurerm" {
-  features {}
-}
+<img width="506" alt="image" src="https://github.com/user-attachments/assets/c555ca46-5e8c-4a1f-84fc-490bef6275c0">
 
-resource "azuread_user" "example_user" {
-  user_principal_name = "example@domain.com"
-  display_name        = "Example User"
-  mail_nickname       = "example"
-  password            = "SuperSecretPassword123!"
-}
 This configuration defined a single user with a unique principal name, display name, and password.
+
 Step 3: Applying the Configuration
 After validating my configuration using the terraform plan command, I applied it with terraform apply. Terraform communicated with Azure's API to create the user seamlessly, demonstrating the power of IaC.
+<img width="910" alt="Screenshot 2024-10-17 144630" src="https://github.com/user-attachments/assets/27e9a3db-4536-4fb2-b8a1-1860c787a29c">
+
+## Creating a Virtual Machine with Networking (Azure)
+
+Next, I focused on provisioning a Virtual Machine (VM) along with the necessary networking resources in Azure. Using Terraform’s resource blocks, I defined a Virtual Network (VNet) and a VM and put them into a new Resource Group (rg):
+
+<img width="632" alt="image" src="https://github.com/user-attachments/assets/2c2901f1-3f5d-43b4-b20c-eb0ae4fc935d">
+
+
+<img width="631" alt="image" src="https://github.com/user-attachments/assets/ceca8dac-ae9e-4944-be01-a0ba03455723">
+
+![Screenshot 2024-10-17 144537](https://github.com/user-attachments/assets/1e73f860-a2a4-499b-b853-dbe9808e6b74)
+
+
+By structuring my Terraform configurations this way, I could create a robust Azure environment that included networking capabilities, ensuring my VM was ready for deployment.
 
 ## Creating IAM Users in AWS
 
